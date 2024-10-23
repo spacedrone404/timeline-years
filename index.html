@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="timeline-container">
+        <div class="chronology">Important chronological dates </div>
+        <div class="info-image-container">
+            <div class="info">
+                <h2 id="year">Year</h2>
+                <p id="date">Data</p>
+                <p id="event-text">Event description</p>
+            </div>
+            <div class="event-image">
+                <img id="event-image" src="1946.jpg" alt="Картинка события">
+            </div>
+        </div>
+
+        <div class="timeline">
+            <button id="prev" class="timeline-nav"><img src="arrows/arrow-prev.svg" alt="Previous event"></button>
+            <div class="years" id="years">
+                <!-- Generated years droped here -->
+            </div>
+            <button id="next" class="timeline-nav"><img src="arrows/arrow-next.svg" alt="Next event"></button>
+        </div>
+        <div class="dots-timeline">
+            <div class="event-dot" data-index="0"></div>
+            <div class="event-dot" data-index="1"></div>
+            <div class="event-dot" data-index="2"></div>
+            <div class="event-dot" data-index="3"></div>
+            <div class="event-dot" data-index="4"></div>
+            <div class="event-dot" data-index="5"></div>
+            <div class="event-dot" data-index="6"></div>
+            <div class="event-dot" data-index="7"></div>
+            <div class="event-dot" data-index="8"></div>
+            <div class="event-dot" data-index="9"></div>
+            <div class="event-dot" data-index="10"></div>
+            <div class="event-dot" data-index="11"></div>
+            <div class="event-dot" data-index="12"></div>
+            <div class="event-dot" data-index="13"></div>
+        </div>
+        <div class="fixed-years">
+            <span>1950</span>
+            <span>1960</span>
+            <span>1970</span>
+            <span>1980</span>
+            <span>1990</span>
+            <span>2000</span>
+            <span>2010</span>
+            <span>2020</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

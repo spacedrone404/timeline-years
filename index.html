@@ -1,64 +1,666 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timeline experimental testbed</title>
+  </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timeline</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<body>
-    <div class="timeline-container">
-        <div class="chronology">Important chronological dates </div>
-        <div class="info-image-container">
-            <div class="info">
-                <h2 id="year">Year</h2>
-                <p id="date">Data</p>
-                <p id="event-text">Event description</p>
-            </div>
-            <div class="event-image">
-                <img id="event-image" src="1946.jpg" alt="Картинка события">
-            </div>
-        </div>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+      padding: 10px;
+    }
 
-        <div class="timeline">
-            <button id="prev" class="timeline-nav"><img src="arrows/arrow-prev.svg" alt="Previous event"></button>
-            <div class="years" id="years">
-                <!-- Generated years droped here -->
-            </div>
-            <button id="next" class="timeline-nav"><img src="arrows/arrow-next.svg" alt="Next event"></button>
+    .chronology {
+      font-size: 32px;
+      font-weight: 900;
+      color: #003687;
+      margin-bottom: 20px;
+      display: flex;
+      width: 1000px;
+      animation: event-header-movement linear 0.4s;
+    }
+
+    .timeline-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 40px;
+      width: 1365px;
+    }
+
+    .info-image-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 50px;
+      width: 1000px;
+    }
+
+    #year {
+      margin-bottom: 19px;
+      font-size: 77px;
+      color: #9aa9b1;
+      animation: event-year-movement linear 0.4s;
+    }
+
+    #date {
+      margin-bottom: 16px;
+      font-size: 20px;
+      color: #9aa9b1;
+      animation: event-date-movement linear 0.4s;
+    }
+
+    #event-text {
+      text-align: left;
+      animation: event-text-movement linear 0.4s;
+    }
+
+    @keyframes event-text-movement {
+      from {
+        transform: translateX(100%);
+        display: none;
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0%);
+        display: block;
+        opacity: 1;
+      }
+    }
+
+    @keyframes event-date-movement {
+      from {
+        transform: translateX(100%);
+        display: none;
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0%);
+        display: block;
+        opacity: 1;
+      }
+    }
+
+    @keyframes event-year-movement {
+      from {
+        transform: translateX(100%);
+        display: none;
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0%);
+        display: block;
+        opacity: 1;
+      }
+    }
+
+    @keyframes event-header-movement {
+      from {
+        transform: translateY(-50%);
+        display: none;
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0%);
+        display: block;
+        opacity: 1;
+      }
+    }
+
+    .event-image {
+      display: flex;
+      justify-content: center;
+      animation: event-image-movement linear 0.4s;
+      margin-bottom: 20px;
+    }
+
+    @keyframes event-image-movement {
+      from {
+        transform: translateX(50%);
+        display: none;
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0%);
+        display: block;
+        opacity: 1;
+      }
+    }
+
+    .event-image img {
+      width: clamp(200px, 50vw, 557px);
+      height: auto;
+      border-radius: 7px;
+      transition: opacity 0.3s ease-in-out, width 0.4s ease-in-out;
+    }
+
+    .fade-out {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .fade-in {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .timeline {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      width: auto;
+    }
+
+    .dots-timeline {
+      display: flex;
+      height: 0;
+      justify-content: center;
+      align-items: center;
+      margin-top: 50px;
+      gap: 50px;
+      border-bottom: 2px solid lightgray;
+    }
+
+    .circle {
+      border-radius: 50%;
+      background-color: deepskyblue;
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      opacity: 0;
+      animation: scaleIn 1.8s infinite cubic-bezier(0.17, 0.37, 0.83, 0.77);
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0.5, 0.5);
+        opacity: 1;
+      }
+
+      to {
+        transform: scale(1, 1);
+        opacity: 0.8;
+      }
+    }
+
+    .event-dot {
+      width: 15px;
+      height: 15px;
+      background-color: #6fa4f0;
+      border: 2px solid #6f8490;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      transition: scale 0.2s ease-in-out;
+    }
+
+    .event-dot:hover {
+      scale: 108%;
+      background-color: red;
+      transition: scale 0.2s ease-in-out;
+    }
+
+    .event-dot:hover::after {
+      scale: 104%;
+      display: block;
+    }
+
+    .event-dot.selected {
+      background-color: deepskyblue;
+      opacity: 80%;
+      outline: 1px solid #6f8490;
+    }
+
+    .event-dot::after {
+      content: attr(data-year);
+      position: absolute;
+      top: -40px;
+      transform: translateX(-40%);
+      font-size: 16px;
+      color: #000000;
+      font-weight: 900;
+      display: none;
+    }
+
+    .event-dot.selected::after {
+      display: block;
+    }
+
+    .dot-wrapper {
+      display: flex;
+      gap: 50px;
+    }
+
+    .timeline-nav {
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      transition: 0.4s ease-in-out;
+    }
+
+    .timeline-nav:hover {
+      scale: 108%;
+      transition: 0.4s ease-in-out;
+    }
+
+    @media screen and (max-width: 1536px) {
+      .content-wrapper {
+        outline: 2px blue solid;
+        max-width: 1500px;
+        margin: auto 50px;
+      }
+
+      .dot-wrapper {
+        gap: 40px;
+      }
+    }
+
+    @media screen and (max-width: 1365px) {
+      .content-wrapper {
+        outline: 2px purple solid;
+        margin: auto 50px;
+      }
+
+      .event-image img {
+        width: 500px;
+      }
+
+      .dots-timeline {
+        gap: 10px;
+      }
+
+      .dot-wrapper {
+        gap: 35px;
+      }
+    }
+
+    @media screen and (max-width: 1024px) {
+      .content-wrapper {
+        outline: 2px green solid;
+      }
+
+      .timeline-container {
+        width: 888px;
+      }
+
+      .info-image-container {
+        width: 100%;
+      }
+
+      .event-image img {
+        width: 400px !important;
+      }
+
+      .chronology {
+        width: 100%;
+      }
+    }
+
+    @media screen and (max-width: 800px) {
+      .content-wrapper {
+        outline: 2px orange solid;
+        margin: auto 30px;
+      }
+
+      .timeline-nav {
+        display: none;
+      }
+
+      #year {
+        font-size: 50px;
+      }
+
+      #event-text {
+        font-size: 14px;
+      }
+
+      .chronology {
+        font-size: 24px;
+      }
+
+      .event-image img {
+        width: 280px !important;
+      }
+    }
+
+    @media screen and (max-width: 768x) {
+      .content-wrapper {
+        outline: 2px purple solid;
+        margin: auto 30px;
+      }
+    }
+
+    @media screen and (max-width: 725px) {
+      .content-wrapper {
+        outline: 2px purple solid;
+        margin: auto 30px;
+      }
+
+      .dot-wrapper {
+        gap: 20px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .content-wrapper {
+        outline: 2px rgb(255, 196, 0) solid;
+        margin: auto 20px;
+      }
+
+      .chronology {
+        font-size: 18px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+      }
+
+      .info {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        margin-top: -40px;
+      }
+
+      .event-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        margin: 0 auto;
+
+        position: absolute;
+        width: 100%;
+        transform: translateY(-135%);
+      }
+
+      .event-image img {
+        width: 280px !important;
+        transform: translateX(-30px);
+      }
+
+      .timeline-container {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        height: 500px;
+      }
+
+      .dot-wrapper {
+        display: none;
+      }
+
+      #prev,
+      #next {
+        display: block;
+      }
+
+      #year,
+      #date,
+      #event-text {
+        text-align: right;
+        width: 100%;
+      }
+    }
+
+    @media screen and (max-width: 320px) {
+      .content-wrapper {
+        outline: 2px rgb(0, 247, 255) solid;
+      }
+
+      .event-image img {
+        width: 80% !important;
+      }
+    }
+  </style>
+
+  <body>
+    <div class="timeline-container content-wrapper">
+      <div class="chronology">Important chronological dates</div>
+      <div class="info-image-container">
+        <div class="info">
+          <h2 id="year">Year</h2>
+          <p id="date">Date</p>
+          <p id="event-text">Event description</p>
         </div>
-        <div class="dots-timeline">
-            <div class="event-dot" data-index="0"></div>
-            <div class="event-dot" data-index="1"></div>
-            <div class="event-dot" data-index="2"></div>
-            <div class="event-dot" data-index="3"></div>
-            <div class="event-dot" data-index="4"></div>
-            <div class="event-dot" data-index="5"></div>
-            <div class="event-dot" data-index="6"></div>
-            <div class="event-dot" data-index="7"></div>
-            <div class="event-dot" data-index="8"></div>
-            <div class="event-dot" data-index="9"></div>
-            <div class="event-dot" data-index="10"></div>
-            <div class="event-dot" data-index="11"></div>
-            <div class="event-dot" data-index="12"></div>
-            <div class="event-dot" data-index="13"></div>
+        <div class="event-image">
+          <img id="event-image-id" src="1946.jpg" alt="Event picture" />
         </div>
-        <div class="fixed-years">
-            <span>1950</span>
-            <span>1960</span>
-            <span>1970</span>
-            <span>1980</span>
-            <span>1990</span>
-            <span>2000</span>
-            <span>2010</span>
-            <span>2020</span>
+      </div>
+
+      <div class="dots-timeline">
+        <button id="prev" class="timeline-nav">
+          <img src="arrows/arrow-prev.svg" alt="Next event" />
+        </button>
+        <div class="dot-wrapper">
+          <div class="event-dot" data-year="1946" data-index="0"></div>
+          <div class="event-dot" data-year="1958" data-index="1"></div>
+          <div class="event-dot" data-year="1961" data-index="2"></div>
+          <div class="event-dot" data-year="1965" data-index="3"></div>
+          <div class="event-dot" data-year="1975" data-index="4"></div>
+          <div class="event-dot" data-year="1976" data-index="5"></div>
+          <div class="event-dot" data-year="1988" data-index="6"></div>
+          <div class="event-dot" data-year="1993" data-index="7"></div>
+          <div class="event-dot" data-year="1994" data-index="8"></div>
+          <div class="event-dot" data-year="2009" data-index="9"></div>
+          <div class="event-dot" data-year="2018" data-index="10"></div>
+          <div class="event-dot" data-year="2021" data-index="11"></div>
+          <div class="event-dot" data-year="2024" data-index="12"></div>
+          <div class="event-dot" data-year="2025" data-index="13"></div>
         </div>
+        <button id="next" class="timeline-nav">
+          <img src="arrows/arrow-next.svg" alt="Previous event" />
+        </button>
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+      const yearsData = [
+        {
+          year: 1946,
+          date: "May 14",
+          text: "Starting year is always 1946!",
+          image: "years/1946.jpg",
+        },
+        {
+          year: 1958,
+          date: "March 20",
+          text: "Year banners and dots are clickable",
+          image: "years/1958.jpg",
+        },
+        {
+          year: 1961,
+          date: "August",
+          text: "Navigation arrows are clickable too",
+          image: "years/1961.jpg",
+        },
+        {
+          year: 1965,
+          date: "November",
+          text: "Technologies used: HTML, CSS (design & animation), JS (timeline logic)",
+          image: "years/1965.jpg",
+        },
+        {
+          year: 1975,
+          date: "December",
+          text: "No frameworks were used!",
+          image: "years/1975.jpg",
+        },
+        {
+          year: 1976,
+          date: "July 12",
+          text: "Coded in Windows 7 + VSCodium 1.93",
+          image: "years/1976.jpg",
+        },
+        {
+          year: 1988,
+          date: "June",
+          text: "Development browser Firefox 115 ESR 15.16",
+          image: "years/1988.jpg",
+        },
+        {
+          year: 1993,
+          date: "15 Jan",
+          text: "Drop your feedback to my email address",
+          image: "years/1993.jpg",
+        },
+        {
+          year: 1994,
+          date: "May",
+          text: "Mobile version and additional animations are planned!",
+          image: "years/1994.jpg",
+        },
+        {
+          year: 2009,
+          date: "December",
+          text: "Important events are placed here",
+          image: "years/2009.jpg",
+        },
+        {
+          year: 2018,
+          date: "Jule",
+          text: "Code refactoring is in TBD state",
+          image: "years/2018.jpg",
+        },
+        {
+          year: 2021,
+          date: "November",
+          text: "No windows 10 copies were harmed during development of this page",
+          image: "years/2021.jpg",
+        },
+        {
+          year: 2024,
+          date: "October",
+          text: "Make code, not war!",
+          image: "years/2024.jpg",
+        },
+        {
+          year: 2025,
+          date: "May",
+          text: "It looks like you have reached the end of this demo, see you around!",
+          image: "years/2025.jpg",
+        },
+      ];
+      const eventDots = document.querySelectorAll(".event-dot");
+      const eventImage = document.getElementById("event-image-id");
+      const eventYear = document.getElementById("year");
+      const eventDate = document.getElementById("date");
+      const eventText = document.getElementById("event-text");
+      let selectedYearIndex = 0;
 
-</body>
+      function displayEventInfo(index) {
+        const eventData = yearsData[index];
 
+        document.getElementById("year").textContent = eventData.year;
+        document.getElementById("date").textContent = eventData.date;
+        document.getElementById("event-text").textContent = eventData.text;
+
+        eventImage.classList.remove("fade-in");
+        eventImage.classList.add("fade-out");
+        eventYear.classList.remove("fade-in");
+        eventYear.classList.add("fade-out");
+        eventDate.classList.remove("fade-in");
+        eventDate.classList.add("fade-out");
+        eventText.classList.remove("fade-in");
+        eventText.classList.add("fade-out");
+
+        setTimeout(() => {
+          eventImage.src = eventData.image;
+          eventImage.onload = () => {
+            eventImage.classList.remove("fade-out");
+            eventImage.classList.add("fade-in");
+            eventYear.classList.remove("fade-out");
+            eventYear.classList.add("fade-in");
+            eventDate.classList.remove("fade-out");
+            eventDate.classList.add("fade-in");
+            eventText.classList.remove("fade-out");
+            eventText.classList.add("fade-in");
+          };
+        }, 400);
+      }
+
+      function selectYear(index) {
+        const dotElements = document.querySelectorAll(".event-dot");
+
+        eventDots.forEach((dot) => dot.classList.remove("selected"));
+        eventDots[index].classList.add("selected");
+
+        // Selection + pulsating dot
+        dotElements.forEach((dot, i) => {
+          dot.classList.remove("circle");
+          if (i === index) {
+            dot.classList.add("circle");
+          }
+        });
+
+        displayEventInfo(index);
+      }
+
+      eventDots.forEach((dot, index) => {
+        dot.addEventListener("click", () => {
+          selectedYearIndex = index;
+          selectYear(index);
+        });
+      });
+
+      document.getElementById("prev").addEventListener("click", () => {
+        selectedYearIndex =
+          (selectedYearIndex - 1 + yearsData.length) % yearsData.length;
+        selectYear(selectedYearIndex);
+      });
+
+      document.getElementById("next").addEventListener("click", () => {
+        selectedYearIndex = (selectedYearIndex + 1) % yearsData.length;
+        selectYear(selectedYearIndex);
+      });
+
+      // document.getElementById("prev").addEventListener("click", () => {
+      //     if (selectedYearIndex > 0) {
+      //         selectedYearIndex--;
+      //         selectYear(selectedYearIndex);
+      //     }
+      // });
+
+      // document.getElementById("next").addEventListener("click", () => {
+      //     if (selectedYearIndex < yearsData.length - 1) {
+      //         selectedYearIndex++;
+      //         selectYear(selectedYearIndex);
+      //     }
+      // });
+
+      // Initialize with the first year selected
+      selectYear(selectedYearIndex);
+    </script>
+  </body>
 </html>

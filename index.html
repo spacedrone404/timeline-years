@@ -448,13 +448,13 @@
   <body>
     <div class="timeline-container content-wrapper">
       <div class="chronology">Important chronological dates</div>
-      <div class="info-image-container">
+      <div class="info-image-container" id="info-image-container-id">
         <div class="info">
           <h2 id="year">Year</h2>
           <p id="date">Date</p>
           <p id="event-text">Event description</p>
         </div>
-        <div class="event-image">
+        <div class="event-image active">
           <img id="event-image-id" src="1946.jpg" alt="Event picture" />
         </div>
       </div>
@@ -496,61 +496,61 @@
         {
           year: 1958,
           date: "March 20",
-          text: "Year banners and dots are clickable",
+          text: "Year dots and navigation arrows are clickable",
           image: "years/1958.jpg",
         },
         {
           year: 1961,
           date: "August",
-          text: "Navigation arrows are clickable too",
+          text: "Left click somewhere around year, date, text decription or picture advances to next year",
           image: "years/1961.jpg",
         },
         {
           year: 1965,
           date: "November",
-          text: "Technologies used: HTML, CSS (design & animation), JS (timeline logic)",
+          text: "You can also swipe events if you're on a touchscreen device",
           image: "years/1965.jpg",
         },
         {
           year: 1975,
           date: "December",
-          text: "No frameworks were used!",
+          text: "Technologies used: HTML, CSS (design & animation), JS (timeline logic)",
           image: "years/1975.jpg",
         },
         {
           year: 1976,
           date: "July 12",
-          text: "Coded in Windows 7 + VSCodium 1.93",
+          text: "Coded in Windows 7 + VSCodium 1.93, no frameworks were used!",
           image: "years/1976.jpg",
         },
         {
           year: 1988,
           date: "June",
-          text: "Development browser Firefox 115 ESR 15.16",
+          text: "Development browser Firefox 115 ESR 15.17",
           image: "years/1988.jpg",
         },
         {
           year: 1993,
           date: "15 Jan",
-          text: "Drop your feedback to my email address",
+          text: "Additional animations are planned!",
           image: "years/1993.jpg",
         },
         {
           year: 1994,
           date: "May",
-          text: "Mobile version and additional animations are planned!",
+          text: "Drop your feedback to my email address:  s p 8 0 8 [ @at ] d i s r o o t . o r g ",
           image: "years/1994.jpg",
         },
         {
           year: 2009,
           date: "December",
-          text: "Important events are placed here",
+          text: "Code refactoring is in TBD state",
           image: "years/2009.jpg",
         },
         {
           year: 2018,
           date: "Jule",
-          text: "Code refactoring is in TBD state",
+          text: "Important events are placed here",
           image: "years/2018.jpg",
         },
         {
@@ -577,9 +577,13 @@
       const eventYear = document.getElementById("year");
       const eventDate = document.getElementById("date");
       const eventText = document.getElementById("event-text");
+      const timeline = document.getElementById("info-image-container-id");
+      const events = document.querySelectorAll(".event-image");
+      // let currentIndex = 0;
+
       let selectedYearIndex = 0;
 
-      function displayEventInfo(index) {
+      function selectYear(index) {
         const eventData = yearsData[index];
 
         document.getElementById("year").textContent = eventData.year;
@@ -608,31 +612,26 @@
             eventText.classList.add("fade-in");
           };
         }, 400);
-      }
-
-      function selectYear(index) {
-        const dotElements = document.querySelectorAll(".event-dot");
 
         eventDots.forEach((dot) => dot.classList.remove("selected"));
         eventDots[index].classList.add("selected");
 
+        events.forEach((event, i) => {
+          event.classList.toggle("active", i === index);
+        });
+
+        selectedYearIndex = index;
+
         // Selection + pulsating dot
-        dotElements.forEach((dot, i) => {
-          dot.classList.remove("circle");
-          if (i === index) {
-            dot.classList.add("circle");
-          }
-        });
+        // dotElements.forEach((dot, i) => {
+        //   dot.classList.remove("circle");
+        //   if (i === index) {
+        //     dot.classList.add("circle");
+        //   }
+        // });
 
-        displayEventInfo(index);
+        // displayEventInfo(index);
       }
-
-      eventDots.forEach((dot, index) => {
-        dot.addEventListener("click", () => {
-          selectedYearIndex = index;
-          selectYear(index);
-        });
-      });
 
       document.getElementById("prev").addEventListener("click", () => {
         selectedYearIndex =
@@ -645,22 +644,67 @@
         selectYear(selectedYearIndex);
       });
 
-      // document.getElementById("prev").addEventListener("click", () => {
-      //     if (selectedYearIndex > 0) {
-      //         selectedYearIndex--;
-      //         selectYear(selectedYearIndex);
-      //     }
-      // });
-
-      // document.getElementById("next").addEventListener("click", () => {
-      //     if (selectedYearIndex < yearsData.length - 1) {
-      //         selectedYearIndex++;
-      //         selectYear(selectedYearIndex);
-      //     }
-      // });
-
-      // Initialize with the first year selected
+      // Initialize with the first event
       selectYear(selectedYearIndex);
+
+      // Add click event listeners to dots
+      eventDots.forEach((dot, index) => {
+        dot.addEventListener("click", () => {
+          selectYear(index);
+        });
+      });
+
+      // Swipe functionality
+      let startX = 0;
+      let endX = 0;
+      const minSwipeDistance = 50; // Minimum distance to register a swipe
+
+      // Touch event listeners
+      timeline.addEventListener("pointerdown", (e) => {
+        // startX = e.clientX;
+        startX = e.touches ? e.touches[0].clientX : e.clientX;
+      });
+
+      timeline.addEventListener("pointermove", (e) => {
+        // endX = e.clientX;
+        endX;
+      });
+
+      timeline.addEventListener("pointerup", () => {
+        const swipeDistance = endX - startX;
+
+        // not endless swiping
+        // if (swipeDistance > minSwipeDistance) {
+        //     // Swipe right (previous event)
+        //     selectedYearIndex = Math.max(0, selectedYearIndex - 1);
+        // } else if (swipeDistance < -minSwipeDistance) {
+        //     // Swipe left (next event)
+        //     selectedYearIndex = Math.min(selectedYearIndex + 1);
+        // }
+
+        if (swipeDistance > minSwipeDistance) {
+          // Swipe right (previous event)
+          selectedYearIndex =
+            (selectedYearIndex - 1 + yearsData.length) % yearsData.length;
+        } else if (swipeDistance < -minSwipeDistance) {
+          // Swipe left (next event)
+          selectedYearIndex = (selectedYearIndex + 1) % yearsData.length;
+        }
+
+        // Show the updated event
+        selectYear(selectedYearIndex);
+
+        // Reset swipe coordinates
+        startX = 0;
+        endX = 0;
+      });
+
+      timeline.addEventListener("touchstart", startTouch);
+      timeline.addEventListener("touchmove", moveTouch);
+      timeline.addEventListener("touchend", endTouch);
+      timeline.addEventListener("mousedown", startTouch);
+      timeline.addEventListener("mousemove", moveTouch);
+      timeline.addEventListener("mouseup", endTouch);
     </script>
   </body>
 </html>

@@ -661,13 +661,11 @@
 
       // Touch event listeners
       timeline.addEventListener("pointerdown", (e) => {
-        // startX = e.clientX;
-        startX = e.touches ? e.touches[0].clientX : e.clientX;
+        startX = e.clientX;
       });
 
       timeline.addEventListener("pointermove", (e) => {
-        // endX = e.clientX;
-        endX;
+        endX = e.clientX;
       });
 
       timeline.addEventListener("pointerup", () => {
@@ -688,7 +686,8 @@
             (selectedYearIndex - 1 + yearsData.length) % yearsData.length;
         } else if (swipeDistance < -minSwipeDistance) {
           // Swipe left (next event)
-          selectedYearIndex = (selectedYearIndex + 1) % yearsData.length;
+          selectedYearIndex =
+            Math.min(selectedYearIndex + 1) % yearsData.length;
         }
 
         // Show the updated event

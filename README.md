@@ -15,6 +15,6 @@ Timeline slides can be changed using of multiple inputs:
 * mouse wheel [up/down]
 * touchscreen swipes
 
-
 Extended animations are planned in the upcoming future.
+Some bugs are present in mobile layout got to fix that. 
 More to come! Maybe.... if i have time.

@@ -1,709 +1,803 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Timeline experimental testbed</title>
-  </head>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timeline experimental testbed</title>
+</head>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+    padding: 10px;
+  }
+
+  .chronology {
+    font-size: 32px;
+    font-weight: 900;
+    color: #003687;
+    margin-bottom: 20px;
+    display: flex;
+    width: 1000px;
+    animation: event-header-movement linear 0.4s;
+  }
+
+  .timeline-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 40px;
+    width: 1365px;
+  }
+
+  .info-image-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+    width: 1000px;
+  }
+
+  #year {
+    margin-bottom: 19px;
+    font-size: 77px;
+    color: #9aa9b1;
+    animation: event-year-movement linear 0.4s;
+  }
+
+  #date {
+    margin-bottom: 16px;
+    font-size: 20px;
+    color: #9aa9b1;
+    animation: event-date-movement linear 0.4s;
+  }
+
+  #event-text {
+    text-align: left;
+    animation: event-text-movement linear 0.4s;
+  }
+
+  @keyframes event-text-movement {
+    from {
+      transform: translateX(100%);
+      display: none;
+      opacity: 0;
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f5f5f5;
-      padding: 10px;
+    to {
+      transform: translateX(0%);
+      display: block;
+      opacity: 1;
+    }
+  }
+
+  @keyframes event-date-movement {
+    from {
+      transform: translateX(100%);
+      display: none;
+      opacity: 0;
     }
 
-    .chronology {
-      font-size: 32px;
-      font-weight: 900;
-      color: #003687;
-      margin-bottom: 20px;
-      display: flex;
-      width: 1000px;
-      animation: event-header-movement linear 0.4s;
+    to {
+      transform: translateX(0%);
+      display: block;
+      opacity: 1;
+    }
+  }
+
+  @keyframes event-year-movement {
+    from {
+      transform: translateX(100%);
+      display: none;
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0%);
+      display: block;
+      opacity: 1;
+    }
+  }
+
+  @keyframes event-header-movement {
+    from {
+      transform: translateY(60%);
+      display: none;
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0%);
+      display: block;
+      opacity: 1;
+    }
+  }
+
+  .event-image {
+    display: flex;
+    justify-content: center;
+    animation: event-image-movement linear 0.4s;
+    margin-bottom: 20px;
+  }
+
+  @keyframes event-image-movement {
+    from {
+      transform: translateX(50%);
+      display: none;
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0%);
+      display: block;
+      opacity: 1;
+    }
+  }
+
+  .event-image img {
+    width: clamp(200px, 50vw, 557px);
+    height: auto;
+    border-radius: 7px;
+    transition: opacity 0.3s ease-in-out, width 0.4s ease-in-out;
+  }
+
+  .fade-out {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .fade-in {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .timeline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: auto;
+  }
+
+  .dots-timeline {
+    display: flex;
+    height: 0;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    gap: 50px;
+    border-bottom: 2px solid lightgray;
+  }
+
+  .circle {
+    border-radius: 50%;
+    background-color: deepskyblue;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    opacity: 0;
+    animation: scaleIn 1.8s infinite cubic-bezier(0.17, 0.37, 0.83, 0.77);
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.5, 0.5);
+      opacity: 1;
+    }
+
+    to {
+      transform: scale(1, 1);
+      opacity: 0.8;
+    }
+  }
+
+  .event-dot {
+    width: 15px;
+    height: 15px;
+    background-color: #6fa4f0;
+    border: 2px solid #6f8490;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: scale 0.2s ease-in-out;
+  }
+
+  .event-dot:hover {
+    scale: 108%;
+    background-color: red;
+    transition: scale 0.2s ease-in-out;
+  }
+
+  .event-dot:hover::after {
+    scale: 104%;
+    display: block;
+  }
+
+  .event-dot.selected {
+    background-color: deepskyblue;
+    opacity: 80%;
+    outline: 1px solid #6f8490;
+  }
+
+  .event-dot::after {
+    content: attr(data-year);
+    position: absolute;
+    top: -40px;
+    transform: translateX(-40%);
+    font-size: 16px;
+    color: #000000;
+    font-weight: 900;
+    display: none;
+  }
+
+  .event-dot.selected::after {
+    display: block;
+  }
+
+  .dot-wrapper {
+    display: flex;
+    gap: 50px;
+  }
+
+  .timeline-nav {
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: 0.4s ease-in-out;
+  }
+
+  .timeline-nav:hover {
+    scale: 108%;
+    transition: 0.4s ease-in-out;
+  }
+
+
+  @keyframes slideInFromRight {
+    from {
+      transform: translateX(28%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .slide-in {
+    animation: slideInFromRight 0.8s ease forwards;
+  }
+
+
+  .bottom-mail {
+    margin-top: 20px;
+    font-size: 12px;
+    color: rgba(128, 128, 128, 0.3);
+  }
+
+  @media screen and (max-width: 1536px) {
+    .content-wrapper {
+      outline: 2px blue solid;
+      max-width: 1500px;
+      margin: auto 50px;
+    }
+
+    .dot-wrapper {
+      gap: 40px;
+    }
+  }
+
+  @media screen and (max-width: 1365px) {
+    .content-wrapper {
+      outline: 2px purple solid;
+      margin: auto 50px;
+    }
+
+    .event-image img {
+      width: 500px;
+    }
+
+    .dots-timeline {
+      gap: 10px;
+    }
+
+    .dot-wrapper {
+      gap: 35px;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    .content-wrapper {
+      outline: 2px green solid;
     }
 
     .timeline-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding-bottom: 40px;
-      width: 1365px;
+      width: 888px;
     }
 
     .info-image-container {
-      display: flex;
-      justify-content: space-between;
-      gap: 50px;
-      width: 1000px;
+      width: 100%;
+    }
+
+    .event-image img {
+      width: 400px !important;
+    }
+
+    .chronology {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    .content-wrapper {
+      outline: 2px orange solid;
+      margin: auto 30px;
+    }
+
+    .timeline-nav {
+      display: none;
     }
 
     #year {
-      margin-bottom: 19px;
-      font-size: 77px;
-      color: #9aa9b1;
-      animation: event-year-movement linear 0.4s;
-    }
-
-    #date {
-      margin-bottom: 16px;
-      font-size: 20px;
-      color: #9aa9b1;
-      animation: event-date-movement linear 0.4s;
+      font-size: 50px;
     }
 
     #event-text {
-      text-align: left;
-      animation: event-text-movement linear 0.4s;
+      font-size: 14px;
     }
 
-    @keyframes event-text-movement {
-      from {
-        transform: translateX(100%);
-        display: none;
-        opacity: 0;
-      }
-
-      to {
-        transform: translateX(0%);
-        display: block;
-        opacity: 1;
-      }
+    .chronology {
+      font-size: 24px;
     }
 
-    @keyframes event-date-movement {
-      from {
-        transform: translateX(100%);
-        display: none;
-        opacity: 0;
-      }
+    .event-image img {
+      width: 280px !important;
+    }
+  }
 
-      to {
-        transform: translateX(0%);
-        display: block;
-        opacity: 1;
-      }
+  @media screen and (max-width: 768x) {
+    .content-wrapper {
+      outline: 2px purple solid;
+      margin: auto 30px;
+    }
+  }
+
+  @media screen and (max-width: 725px) {
+    .content-wrapper {
+      outline: 2px purple solid;
+      margin: auto 30px;
     }
 
-    @keyframes event-year-movement {
-      from {
-        transform: translateX(100%);
-        display: none;
-        opacity: 0;
-      }
+    .dot-wrapper {
+      gap: 20px;
+    }
+  }
 
-      to {
-        transform: translateX(0%);
-        display: block;
-        opacity: 1;
-      }
+  @media screen and (max-width: 480px) {
+
+    body {
+      overflow: hidden;
     }
 
-    @keyframes event-header-movement {
-      from {
-        transform: translateY(-50%);
-        display: none;
-        opacity: 0;
-      }
+    .content-wrapper {
+      outline: 2px rgb(255, 196, 0) solid;
+      margin: auto 20px;
+    }
 
-      to {
-        transform: translateY(0%);
-        display: block;
-        opacity: 1;
-      }
+    .chronology {
+      font-size: 18px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .info {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      margin-top: -40px;
     }
 
     .event-image {
       display: flex;
       justify-content: center;
-      animation: event-image-movement linear 0.4s;
-      margin-bottom: 20px;
-    }
-
-    @keyframes event-image-movement {
-      from {
-        transform: translateX(50%);
-        display: none;
-        opacity: 0;
-      }
-
-      to {
-        transform: translateX(0%);
-        display: block;
-        opacity: 1;
-      }
+      align-items: center;
+      align-content: center;
+      margin: 0 auto;
+      position: absolute;
+      width: 85%;
+      transform: translateY(-110%);
+      height: 140px;
+      padding-bottom: 30px;
     }
 
     .event-image img {
-      width: clamp(200px, 50vw, 557px);
-      height: auto;
-      border-radius: 7px;
-      transition: opacity 0.3s ease-in-out, width 0.4s ease-in-out;
+      width: 280px !important;
+      transform: translateX(-30px);
     }
 
-    .fade-out {
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease-in-out;
-    }
-
-    .fade-in {
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 0.3s ease-in-out;
-    }
-
-    .timeline {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-    }
-
-    .info {
+    .timeline-container {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-      width: auto;
-    }
-
-    .dots-timeline {
-      display: flex;
-      height: 0;
-      justify-content: center;
-      align-items: center;
-      margin-top: 50px;
-      gap: 50px;
-      border-bottom: 2px solid lightgray;
-    }
-
-    .circle {
-      border-radius: 50%;
-      background-color: deepskyblue;
-      width: 20px;
-      height: 20px;
-      position: absolute;
-      opacity: 0;
-      animation: scaleIn 1.8s infinite cubic-bezier(0.17, 0.37, 0.83, 0.77);
-    }
-
-    @keyframes scaleIn {
-      from {
-        transform: scale(0.5, 0.5);
-        opacity: 1;
-      }
-
-      to {
-        transform: scale(1, 1);
-        opacity: 0.8;
-      }
-    }
-
-    .event-dot {
-      width: 15px;
-      height: 15px;
-      background-color: #6fa4f0;
-      border: 2px solid #6f8490;
-      border-radius: 50%;
-      cursor: pointer;
-      position: relative;
-      transition: scale 0.2s ease-in-out;
-    }
-
-    .event-dot:hover {
-      scale: 108%;
-      background-color: red;
-      transition: scale 0.2s ease-in-out;
-    }
-
-    .event-dot:hover::after {
-      scale: 104%;
-      display: block;
-    }
-
-    .event-dot.selected {
-      background-color: deepskyblue;
-      opacity: 80%;
-      outline: 1px solid #6f8490;
-    }
-
-    .event-dot::after {
-      content: attr(data-year);
-      position: absolute;
-      top: -40px;
-      transform: translateX(-40%);
-      font-size: 16px;
-      color: #000000;
-      font-weight: 900;
-      display: none;
-    }
-
-    .event-dot.selected::after {
-      display: block;
+      gap: 30px;
+      height: 500px;
     }
 
     .dot-wrapper {
-      display: flex;
-      gap: 50px;
+      display: none;
     }
 
-    .timeline-nav {
-      color: white;
+    #prev,
+    #next {
+      display: block;
+    }
+
+    #year,
+    #date,
+    #event-text {
+      text-align: right;
+      width: 100%;
+      transform: translateY(25px);
+    }
+
+    .dots-timeline {
       border: none;
-      cursor: pointer;
-      padding: 5px;
-      border-radius: 50%;
-      transition: 0.4s ease-in-out;
     }
 
-    .timeline-nav:hover {
-      scale: 108%;
-      transition: 0.4s ease-in-out;
+  }
+
+  @media screen and (max-width: 320px) {
+    .content-wrapper {
+      outline: 2px rgb(0, 247, 255) solid;
     }
 
-    @media screen and (max-width: 1536px) {
-      .content-wrapper {
-        outline: 2px blue solid;
-        max-width: 1500px;
-        margin: auto 50px;
-      }
-
-      .dot-wrapper {
-        gap: 40px;
-      }
+    .event-image img {
+      width: 80% !important;
     }
+  }
+</style>
 
-    @media screen and (max-width: 1365px) {
-      .content-wrapper {
-        outline: 2px purple solid;
-        margin: auto 50px;
-      }
-
-      .event-image img {
-        width: 500px;
-      }
-
-      .dots-timeline {
-        gap: 10px;
-      }
-
-      .dot-wrapper {
-        gap: 35px;
-      }
-    }
-
-    @media screen and (max-width: 1024px) {
-      .content-wrapper {
-        outline: 2px green solid;
-      }
-
-      .timeline-container {
-        width: 888px;
-      }
-
-      .info-image-container {
-        width: 100%;
-      }
-
-      .event-image img {
-        width: 400px !important;
-      }
-
-      .chronology {
-        width: 100%;
-      }
-    }
-
-    @media screen and (max-width: 800px) {
-      .content-wrapper {
-        outline: 2px orange solid;
-        margin: auto 30px;
-      }
-
-      .timeline-nav {
-        display: none;
-      }
-
-      #year {
-        font-size: 50px;
-      }
-
-      #event-text {
-        font-size: 14px;
-      }
-
-      .chronology {
-        font-size: 24px;
-      }
-
-      .event-image img {
-        width: 280px !important;
-      }
-    }
-
-    @media screen and (max-width: 768x) {
-      .content-wrapper {
-        outline: 2px purple solid;
-        margin: auto 30px;
-      }
-    }
-
-    @media screen and (max-width: 725px) {
-      .content-wrapper {
-        outline: 2px purple solid;
-        margin: auto 30px;
-      }
-
-      .dot-wrapper {
-        gap: 20px;
-      }
-    }
-
-    @media screen and (max-width: 480px) {
-      .content-wrapper {
-        outline: 2px rgb(255, 196, 0) solid;
-        margin: auto 20px;
-      }
-
-      .chronology {
-        font-size: 18px;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        height: 100vh;
-        text-align: center;
-      }
-
-      .info {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        margin-top: -40px;
-      }
-
-      .event-image {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        align-content: center;
-        margin: 0 auto;
-
-        position: absolute;
-        width: 100%;
-        transform: translateY(-135%);
-      }
-
-      .event-image img {
-        width: 280px !important;
-        transform: translateX(-30px);
-      }
-
-      .timeline-container {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-        height: 500px;
-      }
-
-      .dot-wrapper {
-        display: none;
-      }
-
-      #prev,
-      #next {
-        display: block;
-      }
-
-      #year,
-      #date,
-      #event-text {
-        text-align: right;
-        width: 100%;
-      }
-    }
-
-    @media screen and (max-width: 320px) {
-      .content-wrapper {
-        outline: 2px rgb(0, 247, 255) solid;
-      }
-
-      .event-image img {
-        width: 80% !important;
-      }
-    }
-  </style>
-
-  <body>
-    <div class="timeline-container content-wrapper">
-      <div class="chronology">Important chronological dates</div>
-      <div class="info-image-container" id="info-image-container-id">
-        <div class="info">
-          <h2 id="year">Year</h2>
-          <p id="date">Date</p>
-          <p id="event-text">Event description</p>
-        </div>
-        <div class="event-image active">
-          <img id="event-image-id" src="1946.jpg" alt="Event picture" />
-        </div>
+<body>
+  <div class="timeline-container content-wrapper">
+    <div class="chronology">Important chronological dates </div>
+    <div class="info-image-container" id="info-image-container-id">
+      <div class="info">
+        <h2 id="year">Year</h2>
+        <p id="date">Date</p>
+        <p id="event-text">Event description</p>
       </div>
-
-      <div class="dots-timeline">
-        <button id="prev" class="timeline-nav">
-          <img src="arrows/arrow-prev.svg" alt="Next event" />
-        </button>
-        <div class="dot-wrapper">
-          <div class="event-dot" data-year="1946" data-index="0"></div>
-          <div class="event-dot" data-year="1958" data-index="1"></div>
-          <div class="event-dot" data-year="1961" data-index="2"></div>
-          <div class="event-dot" data-year="1965" data-index="3"></div>
-          <div class="event-dot" data-year="1975" data-index="4"></div>
-          <div class="event-dot" data-year="1976" data-index="5"></div>
-          <div class="event-dot" data-year="1988" data-index="6"></div>
-          <div class="event-dot" data-year="1993" data-index="7"></div>
-          <div class="event-dot" data-year="1994" data-index="8"></div>
-          <div class="event-dot" data-year="2009" data-index="9"></div>
-          <div class="event-dot" data-year="2018" data-index="10"></div>
-          <div class="event-dot" data-year="2021" data-index="11"></div>
-          <div class="event-dot" data-year="2024" data-index="12"></div>
-          <div class="event-dot" data-year="2025" data-index="13"></div>
-        </div>
-        <button id="next" class="timeline-nav">
-          <img src="arrows/arrow-next.svg" alt="Previous event" />
-        </button>
+      <div class="event-image active">
+        <img id="event-image-id" src="1946.jpg" alt="Event picture" />
       </div>
     </div>
 
-    <script>
-      const yearsData = [
-        {
-          year: 1946,
-          date: "May 14",
-          text: "Starting year is always 1946!",
-          image: "years/1946.jpg",
-        },
-        {
-          year: 1958,
-          date: "March 20",
-          text: "Year dots and navigation arrows are clickable",
-          image: "years/1958.jpg",
-        },
-        {
-          year: 1961,
-          date: "August",
-          text: "Left click somewhere around year, date, text decription or picture advances to next year",
-          image: "years/1961.jpg",
-        },
-        {
-          year: 1965,
-          date: "November",
-          text: "You can also swipe events if you're on a touchscreen device",
-          image: "years/1965.jpg",
-        },
-        {
-          year: 1975,
-          date: "December",
-          text: "Technologies used: HTML, CSS (design & animation), JS (timeline logic)",
-          image: "years/1975.jpg",
-        },
-        {
-          year: 1976,
-          date: "July 12",
-          text: "Coded in Windows 7 + VSCodium 1.93, no frameworks were used!",
-          image: "years/1976.jpg",
-        },
-        {
-          year: 1988,
-          date: "June",
-          text: "Development browser Firefox 115 ESR 15.17",
-          image: "years/1988.jpg",
-        },
-        {
-          year: 1993,
-          date: "15 Jan",
-          text: "Additional animations are planned!",
-          image: "years/1993.jpg",
-        },
-        {
-          year: 1994,
-          date: "May",
-          text: "Drop your feedback to my email address:  s p 8 0 8 [ @at ] d i s r o o t . o r g ",
-          image: "years/1994.jpg",
-        },
-        {
-          year: 2009,
-          date: "December",
-          text: "Code refactoring is in TBD state",
-          image: "years/2009.jpg",
-        },
-        {
-          year: 2018,
-          date: "Jule",
-          text: "Important events are placed here",
-          image: "years/2018.jpg",
-        },
-        {
-          year: 2021,
-          date: "November",
-          text: "No windows 10 copies were harmed during development of this page",
-          image: "years/2021.jpg",
-        },
-        {
-          year: 2024,
-          date: "October",
-          text: "Make code, not war!",
-          image: "years/2024.jpg",
-        },
-        {
-          year: 2025,
-          date: "May",
-          text: "It looks like you have reached the end of this demo, see you around!",
-          image: "years/2025.jpg",
-        },
-      ];
-      const eventDots = document.querySelectorAll(".event-dot");
-      const eventImage = document.getElementById("event-image-id");
-      const eventYear = document.getElementById("year");
-      const eventDate = document.getElementById("date");
-      const eventText = document.getElementById("event-text");
-      const timeline = document.getElementById("info-image-container-id");
-      const events = document.querySelectorAll(".event-image");
-      // let currentIndex = 0;
+    <div class="dots-timeline">
+      <button id="prev" class="timeline-nav">
+        <img src="arrows/arrow-prev.svg" alt="Next event" />
+      </button>
+      <div class="dot-wrapper">
+        <div class="event-dot" data-year="1948" data-index="0"></div>
+        <div class="event-dot" data-year="1958" data-index="1"></div>
+        <div class="event-dot" data-year="1961" data-index="2"></div>
+        <div class="event-dot" data-year="1965" data-index="3"></div>
+        <div class="event-dot" data-year="1975" data-index="4"></div>
+        <div class="event-dot" data-year="1976" data-index="5"></div>
+        <div class="event-dot" data-year="1988" data-index="6"></div>
+        <div class="event-dot" data-year="1993" data-index="7"></div>
+        <div class="event-dot" data-year="1994" data-index="8"></div>
+        <div class="event-dot" data-year="2009" data-index="9"></div>
+        <div class="event-dot" data-year="2018" data-index="10"></div>
+        <div class="event-dot" data-year="2021" data-index="11"></div>
+        <div class="event-dot" data-year="2024" data-index="12"></div>
+        <div class="event-dot" data-year="2025" data-index="13"></div>
+      </div>
+      <button id="next" class="timeline-nav">
+        <img src="arrows/arrow-next.svg" alt="Previous event" />
+      </button>
+    </div>
+    <p class="bottom-mail">s p 8 0 8 [ @at ] d i s r o o t [ d o t ] o r g</p>
 
-      let selectedYearIndex = 0;
+  </div>
 
-      function selectYear(index) {
-        const eventData = yearsData[index];
+  <script>
+    const yearsData = [
+      {
+        year: 1948,
+        date: "May 14",
+        text: "Starting year is always 1948",
+        image: "years/1948.jpg",
+      },
+      {
+        year: 1958,
+        date: "March 20",
+        text: "Year dots and navigation arrows are clickable, mouse wheel is switching events too",
+        image: "years/1958.jpg",
+      },
+      {
+        year: 1961,
+        date: "August",
+        text: "You can use keyboard arrows to navigate? ◄ ► ▲ ▼",
+        image: "years/1961.jpg",
+      },
+      {
+        year: 1965,
+        date: "November",
+        text: "You can also swipe events if you're on a touchscreen device",
+        image: "years/1965.jpg",
+      },
+      {
+        year: 1975,
+        date: "December",
+        text: "Technologies: HTML, CSS (animations), JS (timeline logic)",
+        image: "years/1975.jpg",
+      },
+      {
+        year: 1976,
+        date: "July 12",
+        text: "Coded in Windows 7 x64 + VSCodium 1.93, no frameworks!",
+        image: "years/1976.jpg",
+      },
+      {
+        year: 1988,
+        date: "June",
+        text: "Development browser Firefox 115 ESR 15.17",
+        image: "years/1988.jpg",
+      },
+      {
+        year: 1993,
+        date: "15 Jan",
+        text: "Additional animations are planned!",
+        image: "years/1993.jpg",
+      },
+      {
+        year: 1994,
+        date: "May",
+        text: "Drop your feedback to my email address",
+        image: "years/1994.jpg",
+      },
+      {
+        year: 2009,
+        date: "December",
+        text: "Code refactoring is in TBD state",
+        image: "years/2009.jpg",
+      },
+      {
+        year: 2018,
+        date: "Jule",
+        text: "Important events are placed here",
+        image: "years/2018.jpg",
+      },
+      {
+        year: 2021,
+        date: "November",
+        text: "No win10 copies were harmed during development",
+        image: "years/2021.jpg",
+      },
+      {
+        year: 2024,
+        date: "October",
+        text: "Make code, not war!",
+        image: "years/2024.jpg",
+      },
+      {
+        year: 2025,
+        date: "May",
+        text: "It looks like you have reached the end of this demo!",
+        image: "years/2025.jpg",
+      },
+    ];
+    const eventDots = document.querySelectorAll(".event-dot");
+    const eventImage = document.getElementById("event-image-id");
+    const eventYear = document.getElementById("year");
+    const eventDate = document.getElementById("date");
+    const eventText = document.getElementById("event-text");
+    const timeline = document.getElementById("info-image-container-id");
+    const events = document.querySelectorAll(".event-image");
 
-        document.getElementById("year").textContent = eventData.year;
-        document.getElementById("date").textContent = eventData.date;
-        document.getElementById("event-text").textContent = eventData.text;
+    let selectedYearIndex = 0;
 
-        eventImage.classList.remove("fade-in");
-        eventImage.classList.add("fade-out");
-        eventYear.classList.remove("fade-in");
-        eventYear.classList.add("fade-out");
-        eventDate.classList.remove("fade-in");
-        eventDate.classList.add("fade-out");
-        eventText.classList.remove("fade-in");
-        eventText.classList.add("fade-out");
+    function selectYear(index) {
+      const eventData = yearsData[index];
 
-        setTimeout(() => {
-          eventImage.src = eventData.image;
-          eventImage.onload = () => {
-            eventImage.classList.remove("fade-out");
-            eventImage.classList.add("fade-in");
-            eventYear.classList.remove("fade-out");
-            eventYear.classList.add("fade-in");
-            eventDate.classList.remove("fade-out");
-            eventDate.classList.add("fade-in");
-            eventText.classList.remove("fade-out");
-            eventText.classList.add("fade-in");
-          };
-        }, 400);
 
-        eventDots.forEach((dot) => dot.classList.remove("selected"));
-        eventDots[index].classList.add("selected");
+      eventImage.classList.remove("slide-in");
+      void eventImage.offsetWidth;
 
-        events.forEach((event, i) => {
-          event.classList.toggle("active", i === index);
-        });
+      eventImage.src = eventData.image;
+      eventImage.classList.add("slide-in");
 
-        selectedYearIndex = index;
 
-        // Selection + pulsating dot
-        // dotElements.forEach((dot, i) => {
-        //   dot.classList.remove("circle");
-        //   if (i === index) {
-        //     dot.classList.add("circle");
-        //   }
-        // });
+      document.getElementById("year").textContent = eventData.year;
+      document.getElementById("date").textContent = eventData.date;
+      document.getElementById("event-text").textContent = eventData.text;
 
-        // displayEventInfo(index);
-      }
+      eventImage.classList.remove("fade-in");
+      eventImage.classList.add("fade-out");
+      eventYear.classList.remove("fade-in");
+      eventYear.classList.add("fade-out");
+      eventDate.classList.remove("fade-in");
+      eventDate.classList.add("fade-out");
+      eventText.classList.remove("fade-in");
+      eventText.classList.add("fade-out");
 
-      document.getElementById("prev").addEventListener("click", () => {
+      setTimeout(() => {
+        eventImage.src = eventData.image;
+        eventImage.onload = () => {
+          eventImage.classList.remove("fade-out");
+          eventImage.classList.add("fade-in");
+          eventYear.classList.remove("fade-out");
+          eventYear.classList.add("fade-in");
+          eventDate.classList.remove("fade-out");
+          eventDate.classList.add("fade-in");
+          eventText.classList.remove("fade-out");
+          eventText.classList.add("fade-in");
+        };
+      }, 400);
+
+
+
+      eventDots.forEach((dot) => dot.classList.remove("selected"));
+      eventDots[index].classList.add("selected");
+
+      events.forEach((event, i) => {
+        event.classList.toggle("active", i === index);
+      });
+
+      eventDots.forEach((dot, i) => {
+        dot.classList.remove('circle');
+        if (i === index) {
+          dot.classList.add('circle');
+        }
+      });
+
+      selectedYearIndex = index;
+
+    }
+
+    document.getElementById("prev").addEventListener("click", () => {
+      selectedYearIndex =
+        (selectedYearIndex - 1 + yearsData.length) % yearsData.length;
+      selectYear(selectedYearIndex);
+    });
+
+    document.getElementById("next").addEventListener("click", () => {
+      selectedYearIndex = (selectedYearIndex + 1) % yearsData.length;
+      selectYear(selectedYearIndex);
+    });
+
+    // Initialize with the first event
+    selectYear(selectedYearIndex);
+
+    // Add click event listeners to dots
+    eventDots.forEach((dot, index) => {
+      dot.addEventListener("click", () => {
+        selectYear(index);
+      });
+    });
+
+    // Swipe functionality
+    let startX = 0;
+    let endX = 0;
+    const minSwipeDistance = 50; // Minimum distance to register a swipe
+
+    // Touch event listeners
+    timeline.addEventListener("pointerdown", (e) => {
+      startX = e.clientX;
+    });
+
+    timeline.addEventListener("pointermove", (e) => {
+      endX = e.clientX;
+    });
+
+    timeline.addEventListener("pointerup", () => {
+      const swipeDistance = endX - startX;
+
+      // not endless swiping
+      // if (swipeDistance > minSwipeDistance) {
+      //     // Swipe right (previous event)
+      //     selectedYearIndex = Math.max(0, selectedYearIndex - 1);
+      // } else if (swipeDistance < -minSwipeDistance) {
+      //     // Swipe left (next event)
+      //     selectedYearIndex = Math.min(selectedYearIndex + 1);
+      // }
+
+      if (swipeDistance > minSwipeDistance) {
+        // Swipe right (previous event)
         selectedYearIndex =
           (selectedYearIndex - 1 + yearsData.length) % yearsData.length;
-        selectYear(selectedYearIndex);
-      });
+      } else if (swipeDistance < -minSwipeDistance) {
+        // Swipe left (next event)
+        selectedYearIndex =
+          Math.min(selectedYearIndex + 1) % yearsData.length;
+      }
 
-      document.getElementById("next").addEventListener("click", () => {
-        selectedYearIndex = (selectedYearIndex + 1) % yearsData.length;
-        selectYear(selectedYearIndex);
-      });
-
-      // Initialize with the first event
+      // Show the updated event
       selectYear(selectedYearIndex);
 
-      // Add click event listeners to dots
-      eventDots.forEach((dot, index) => {
-        dot.addEventListener("click", () => {
-          selectYear(index);
-        });
-      });
+      // Reset swipe coordinates
+      startX = 0;
+      endX = 0;
+    });
 
-      // Swipe functionality
-      let startX = 0;
-      let endX = 0;
-      const minSwipeDistance = 50; // Minimum distance to register a swipe
+    let mouseSensitivity = false;
 
-      // Touch event listeners
-      timeline.addEventListener("pointerdown", (e) => {
-        startX = e.clientX;
-      });
+    function handleMouseWheel(event) {
+      if (mouseSensitivity) return;
 
-      timeline.addEventListener("pointermove", (e) => {
-        endX = e.clientX;
-      });
+      mouseSensitivity = true;
+      setTimeout(() => {
+        mouseSensitivity = false;
+      }, 500);
 
-      timeline.addEventListener("pointerup", () => {
-        const swipeDistance = endX - startX;
+      if (event.deltaY > 0) {
+        selectedYearIndex = (selectedYearIndex + 1) % yearsData.length;
+      } else {
+        selectedYearIndex = (selectedYearIndex - 1 + yearsData.length) % yearsData.length;
+      }
 
-        // not endless swiping
-        // if (swipeDistance > minSwipeDistance) {
-        //     // Swipe right (previous event)
-        //     selectedYearIndex = Math.max(0, selectedYearIndex - 1);
-        // } else if (swipeDistance < -minSwipeDistance) {
-        //     // Swipe left (next event)
-        //     selectedYearIndex = Math.min(selectedYearIndex + 1);
-        // }
+      selectYear(selectedYearIndex);
 
-        if (swipeDistance > minSwipeDistance) {
-          // Swipe right (previous event)
-          selectedYearIndex =
-            (selectedYearIndex - 1 + yearsData.length) % yearsData.length;
-        } else if (swipeDistance < -minSwipeDistance) {
-          // Swipe left (next event)
-          selectedYearIndex =
-            Math.min(selectedYearIndex + 1) % yearsData.length;
-        }
+      event.preventDefault();
 
-        // Show the updated event
+    }
+
+    function handleArrowKeys(event) {
+      if (event.key === "ArrowRight") {
+        selectedYearIndex = (selectedYearIndex + 1) % yearsData.length;
         selectYear(selectedYearIndex);
+      } else if (event.key === "ArrowLeft") {
+        selectedYearIndex = (selectedYearIndex - 1 + yearsData.length) % yearsData.length;
+        selectYear(selectedYearIndex);
+      }
+      else if (event.key === "ArrowDown") {
+        selectedYearIndex = (selectedYearIndex - 1 + yearsData.length) % yearsData.length;
+        selectYear(selectedYearIndex);
+      }
+      else if (event.key === "ArrowUp") {
+        selectedYearIndex = (selectedYearIndex + 1) % yearsData.length;
+        selectYear(selectedYearIndex);
+      }
+    }
 
-        // Reset swipe coordinates
-        startX = 0;
-        endX = 0;
-      });
+    window.onload = function () {
+      document.body.focus();
+    };
 
-      timeline.addEventListener("touchstart", startTouch);
-      timeline.addEventListener("touchmove", moveTouch);
-      timeline.addEventListener("touchend", endTouch);
-      timeline.addEventListener("mousedown", startTouch);
-      timeline.addEventListener("mousemove", moveTouch);
-      timeline.addEventListener("mouseup", endTouch);
-    </script>
-  </body>
+    window.addEventListener("wheel", handleMouseWheel);
+    window.addEventListener("keydown", handleArrowKeys);
+    window.addEventListener("touchstart", startTouch);
+    window.addEventListener("touchmove", moveTouch);
+    window.addEventListener("touchend", endTouch);
+    window.addEventListener("mousedown", startTouch);
+    window.addEventListener("mousemove", moveTouch);
+    window.addEventListener("mouseup", endTouch);
+
+  </script>
+</body>
+
 </html>

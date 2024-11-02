@@ -3,19 +3,20 @@ Chronological timeline rendered via plain JS/CSS.
 Written from scratch in Windows 7 x64 / VSCodium 1.93.
 <br>
 
-Main features: 
-* Lightweight: no frameworks used, pure code
-* Adaptive design: desktop & mobile
-* Smooth resizing & interactive animations
+Main features:
 
-Timeline slides can be changed using of multiple inputs: 
+- Lightweight: no frameworks used, pure code
+- Adaptive design: desktop & mobile
+- Smooth resizing & interactive animations
 
-* GUI interactions [dots, arrow buttons, clicks] 
-* keyboard arrows [left/right/up/down]  
-* mouse wheel [up/down]
-* touchscreen swipes
+Timeline slides can be changed using of multiple inputs:
+
+- GUI interactions [dots, arrow buttons, clicks]
+- keyboard arrows [left/right/up/down]
+- mouse wheel [up/down]
+- touchscreen swipes
 
 Mobile layout styling is a bit hackerish right now.
-Non standard breapoints, negative margins/coordinate transformations doesn't look neat, got to fix that.
+Non standard breakpoints, negative margins/coordinate transformations doesn't look neat, got to fix that.
 Extended animations are planned in the upcoming future.
 More to come! Maybe.... somebody give me an ability not to sleep!.

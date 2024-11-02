@@ -17,6 +17,9 @@ Timeline slides can be changed using of multiple inputs:
 - touchscreen swipes
 
 Mobile layout styling is a bit hackerish right now.
+<br>
 Non standard breakpoints, negative margins/coordinate transformations doesn't look neat, got to fix that.
+<br>
 Extended animations are planned in the upcoming future.
+<br>
 More to come! Maybe.... somebody give me an ability not to sleep!.

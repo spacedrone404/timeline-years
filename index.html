@@ -14,6 +14,10 @@
     box-sizing: border-box;
   }
 
+  html {
+    overflow: hidden;
+  }
+
   body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -22,6 +26,7 @@
     height: 100vh;
     background-color: #f5f5f5;
     padding: 10px;
+    overflow: hidden;
   }
 
   .chronology {
@@ -40,7 +45,7 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 40px;
-    width: 1365px;
+
   }
 
   .info-image-container {
@@ -66,6 +71,8 @@
 
   #event-text {
     text-align: left;
+    width: 28ch;
+    height: 20px;
     animation: event-text-movement linear 0.4s;
   }
 
@@ -148,6 +155,7 @@
 
   .event-image img {
     width: clamp(200px, 50vw, 557px);
+    max-width: 100%;
     height: auto;
     border-radius: 7px;
     transition: opacity 0.3s ease-in-out, width 0.4s ease-in-out;
@@ -265,12 +273,13 @@
     border: none;
     cursor: pointer;
     padding: 5px;
+    padding-top: 6px;
     border-radius: 50%;
     transition: 0.4s ease-in-out;
   }
 
   .timeline-nav:hover {
-    scale: 108%;
+    scale: 104%;
     transition: 0.4s ease-in-out;
   }
 
@@ -312,7 +321,7 @@
 
   @media screen and (max-width: 1365px) {
     .content-wrapper {
-      outline: 2px purple solid;
+      outline: 2px rgb(0, 255, 140) solid;
       margin: auto 50px;
     }
 
@@ -351,7 +360,7 @@
     }
   }
 
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 820px) {
     .content-wrapper {
       outline: 2px orange solid;
       margin: auto 30px;
@@ -373,6 +382,7 @@
       font-size: 24px;
     }
 
+
     .event-image img {
       width: 280px !important;
     }
@@ -380,15 +390,20 @@
 
   @media screen and (max-width: 768x) {
     .content-wrapper {
-      outline: 2px purple solid;
+      outline: 2px rgb(0, 229, 255) solid;
       margin: auto 30px;
     }
   }
 
   @media screen and (max-width: 725px) {
     .content-wrapper {
-      outline: 2px purple solid;
-      margin: auto 30px;
+      outline: 2px red solid;
+      margin: auto 10px;
+    }
+
+    .event-image img {
+      width: 240px !important;
+      transform: translateX(-20px) !important;
     }
 
     .dot-wrapper {
@@ -396,15 +411,12 @@
     }
   }
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 520px) {
 
-    body {
-      overflow: hidden;
-    }
 
     .content-wrapper {
       outline: 2px rgb(255, 196, 0) solid;
-      margin: auto 20px;
+      /* margin: auto 20px; */
     }
 
     .chronology {
@@ -430,7 +442,7 @@
       align-content: center;
       margin: 0 auto;
       position: absolute;
-      width: 85%;
+      width: 100%;
       transform: translateY(-110%);
       height: 140px;
       padding-bottom: 30px;
@@ -446,6 +458,7 @@
       flex-direction: column;
       gap: 30px;
       height: 500px;
+
     }
 
     .dot-wrapper {
@@ -476,8 +489,14 @@
       outline: 2px rgb(0, 247, 255) solid;
     }
 
+    .chronology {
+      text-align: center;
+    }
+
+
     .event-image img {
-      width: 80% !important;
+      width: 85% !important;
+      
     }
   }
 </style>
@@ -535,7 +554,7 @@
       {
         year: 1958,
         date: "March 20",
-        text: "Year dots and navigation arrows are clickable, mouse wheel is switching events too",
+        text: "Year dots & navigation arrows are clickable, mouse wheel is switching events too",
         image: "years/1958.jpg",
       },
       {
